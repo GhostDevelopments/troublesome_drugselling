@@ -76,12 +76,6 @@ RegisterNetEvent("gd_drugselling:client:salePaid", function(drugLabel, saleCount
 end)
 
 local function cancelDrugSale()
-    if transactionActive then
-        transactionCancelled = true
-        pcall(lib.cancelProgress)
-        return
-    end
-
     if sellingActive and stopSelling then
         stopSelling()
     end
