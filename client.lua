@@ -6,6 +6,7 @@ local transactionCancelled = false
 local activeMoneyZoneIndex
 local next_ped
 local queueNextPed
+local stopSelling
 
 local function isValidMoneyZone(zone)
     return type(zone) == "table"
@@ -73,6 +74,23 @@ RegisterNetEvent("gd_drugselling:client:salePaid", function(drugLabel, saleCount
         type = "success"
     })
 end)
+
+local function cancelDrugSale()
+    if transactionActive then
+        transactionCancelled = true
+        pcall(lib.cancelProgress)
+        return
+    end
+
+    if sellingActive and stopSelling then
+        stopSelling()
+    end
+end
+
+RegisterCommand("+cancelDrugSale", cancelDrugSale, false)
+RegisterCommand("-cancelDrugSale", function() end, false)
+RegisterKeyMapping("+cancelDrugSale", "Cancel active drug sale transaction", "keyboard", "x")
+
 
 local function playAnim(dict, anim, speed, time, flag)
     lib.requestAnimDict(dict)
@@ -396,7 +414,7 @@ queueNextPed = function()
     end)
 end
 
-local function stopSelling()
+stopSelling = function()
     if not sellingActive then
         lib.notify({ title = Config.notify.title, description = Config.notify.notSelling, type = "inform" })
         return
@@ -423,10 +441,6 @@ local function stopSelling()
     npc = {}
     lib.notify({ title = Config.notify.title, description = Config.notify.stopped, type = "inform" })
 end
-
-RegisterCommand("+cancelDrugSale", stopSelling, false)
-RegisterCommand("-cancelDrugSale", function() end, false)
-RegisterKeyMapping("+cancelDrugSale", "Cancel active drug sale", "keyboard", "x")
 
 RegisterCommand("selldrugs", function()
     if sellingActive then
