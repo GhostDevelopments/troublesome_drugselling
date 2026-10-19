@@ -74,20 +74,6 @@ RegisterNetEvent("gd_drugselling:client:salePaid", function(drugLabel, saleCount
     })
 end)
 
-local function cancelDrugSale()
-    if not transactionActive then
-        return
-    end
-
-    transactionCancelled = true
-    pcall(lib.cancelProgress)
-end
-
-RegisterCommand("+cancelDrugSale", cancelDrugSale, false)
-RegisterCommand("-cancelDrugSale", function() end, false)
-RegisterKeyMapping("+cancelDrugSale", "Cancel active drug sale transaction", "keyboard", "x")
-
-
 local function playAnim(dict, anim, speed, time, flag)
     lib.requestAnimDict(dict)
     TaskPlayAnim(cache.ped, dict, anim, speed, speed, time, flag, 1, false, false, false)
@@ -437,6 +423,10 @@ local function stopSelling()
     npc = {}
     lib.notify({ title = Config.notify.title, description = Config.notify.stopped, type = "inform" })
 end
+
+RegisterCommand("+cancelDrugSale", stopSelling, false)
+RegisterCommand("-cancelDrugSale", function() end, false)
+RegisterKeyMapping("+cancelDrugSale", "Cancel active drug sale", "keyboard", "x")
 
 RegisterCommand("selldrugs", function()
     if sellingActive then

@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Ghost Developments'
 description 'Official Trouble Some Rp Drug Selling'
-version '1.0.1'
+version '1.0.2'
 
 shared_script '@ox_lib/init.lua'
 shared_script 'config.lua'
